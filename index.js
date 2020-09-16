@@ -12,32 +12,28 @@ var tokenSeguridad = ''
 var monto = 0
 var codigoComercio = ''
 var responseJSON = ''
+var secuenciaPago = ''
 const port = 3000
 
 app.get('/', (req, res) => res.send(req.body))
 
 //use userinfo from the form and make a post request to /userinfo
 app.post('/infovisa', async(req, res) => {
-    //recibimos las variables que envía el form
-    var merchantId = req.body.merchantId
-    var currency = req.body.currency
-    var clientname = req.body.clientname
-    var clientlastname = req.body.clientlastname
-    var amount = req.body.amount
-    var email = req.body.email
 
-    var user = 'integraciones.visanet@necomplus.com'
-    var password = 'd5e7nk$M'
+    var visa = {
+        merchantId: req.body.merchantId,
+        currency: req.body.currency,
+        clientname: req.body.clientname,
+        clientlastname: req.body.clientlastname,
+        amount: req.body.amount,
+        email: req.body.email,
+        purchaseNumber: req.body.purchasenumber,
+        user: req.body.user,
+        password: req.body.password
+    }
 
-    var credentials = Buffer.from(user + ':' + password).toString('base64')
-    let boton = await getToken(
-        credentials,
-        merchantId,
-        amount,
-        clientname,
-        clientlastname,
-        email
-    )
+    var credentials = Buffer.from(visa.user + ':' + visa.password).toString('base64')
+    let boton = await getToken(credentials, visa)
 
     res.send(boton)
 })
@@ -58,7 +54,7 @@ app.post('/responsevisa', async(req, res) => {
                 order: {
                     amount: monto,
                     currency: 'PEN',
-                    purchaseNumber: '23432',
+                    purchaseNumber: secuenciaPago,
                     tokenId: req.body.transactionToken,
                 },
                 terminalId: '1',
@@ -83,7 +79,7 @@ app.listen(port, () => console.log(`Example app listening on port ${port}!`))
 
 //funciones
 
-async function getToken(credentials, merchantId, amount, clientname, clientlastname, email) {
+async function getToken(credentials, visa) {
     var boton = ''
     var options = {
             method: 'POST',
@@ -98,14 +94,7 @@ async function getToken(credentials, merchantId, amount, clientname, clientlastn
     await rp(options)
         .then(async function(response) {
             tokenSeguridad = response
-            boton = await generarSesion(
-                response,
-                merchantId,
-                amount,
-                clientname,
-                clientlastname,
-                email
-            )
+            boton = await generarSesion(tokenSeguridad, visa)
         })
         .catch(function(err) {
             // API call failed...
@@ -114,17 +103,17 @@ async function getToken(credentials, merchantId, amount, clientname, clientlastn
     return boton
 }
 
-async function generarSesion(token, merchantId, amount, clientname, clientlastname, email) {
+async function generarSesion(token, visa) {
     var boton = ''
     var options = {
         method: 'POST',
-        uri: config.APISession + merchantId,
+        uri: config.APISession + visa.merchantId,
         headers: {
             Authorization: token,
             'Content-Type': 'application/json',
         },
         body: {
-            amount: amount,
+            amount: visa.amount,
             antifraud: null, //luego completar
             channel: 'web',
             recurrenceMaxAmount: null,
@@ -137,11 +126,7 @@ async function generarSesion(token, merchantId, amount, clientname, clientlastna
             console.log('Response: ', response)
             boton = await generarBoton(
                 response['sessionKey'],
-                amount,
-                merchantId,
-                clientname,
-                clientlastname,
-                email
+                visa
             )
         })
         .catch(function(err) {
@@ -152,27 +137,27 @@ async function generarSesion(token, merchantId, amount, clientname, clientlastna
     return boton
 }
 
-function generarBoton(sessionKey, amount, merchantId, clientname, clientlastname, email) {
-    monto = amount
-    codigoComercio = merchantId
-
+function generarBoton(sessionKey, visa) {
+    monto = visa.amount
+    codigoComercio = visa.merchantId
+    secuenciaPago = visa.purchaseNumber
     var result = "<form action='/responsevisa' method='post'>" +
         "<script src='" + config.urlJs + "'" +
         "data-sessiontoken='" + sessionKey + "'" +
         "data-channel='web'" +
-        "data-merchantid='" + merchantId + "'" +
-        "data-cardholdername='" + clientname + "'" +
-        "data-cardholderlastname='" + clientlastname + "'" +
-        "data-cardholderemail='" + email + "'" +
+        "data-merchantid='" + visa.merchantId + "'" +
+        "data-cardholdername='" + visa.clientname + "'" +
+        "data-cardholderlastname='" + visa.clientlastname + "'" +
+        "data-cardholderemail='" + visa.email + "'" +
         "data-merchantlogo= 'img/comercio.png'" +
         "data-formbuttoncolor='#D80000'" +
-        "data-purchasenumber='23432'" +
-        "data-amount='" + amount + "'" +
+        "data-purchasenumber='" + visa.purchaseNumber + "'" +
+        "data-amount='" + visa.amount + "'" +
         "data-expirationminutes='5'" +
         "data-timeouturl = 'timeout.html'>" +
         "</script>" +
         "</form>"
-
+    console.log(visa.purchaseNumber)
     console.log('Resultado GenerarBoton: ' + result)
     return result
 }

@@ -1,0 +1,93 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <title> 💸 Pago Visa </title>
+    <!-- <link rel="stylesheet" type="text/css" href="styles.css"> -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="../index.js"></script>
+    <!-- <script src="js/script.js"></script>
+  <script src="js/jquery.js"></script> -->
+</head>
+
+<body>
+    <div class="container">
+        <h1>Pago de Citas 🩺</h1>
+        <hr>
+        <form action="/infovisa" method="post">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label for="merchantId">Código de comercio: </label>
+                                        <input type="text" class="form-control" value="522591303" id="merchantId" name="merchantId" />
+                                    </div>
+                                </div>
+                                <div class="col-md-3 ">
+                                    <div class="form-group ">
+                                        <label for="currency">Moneda:</label>
+                                        <select class="form-control" id="currency" name="currency">
+											<option value="PEN " selected>Soles</option>
+											<option value="USD ">Dolares</option>
+										</select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row ">
+                                <div class="col-md-3 ">
+                                    <div class="form-group ">
+                                        <label for="clientname">Nombre:</label>
+                                        <input type="text " class="form-control" value="Integraciones" id="clientname" name="clientname" />
+                                    </div>
+                                </div>
+                                <div class="col-md-3 ">
+                                    <div class="form-group ">
+                                        <label for="clientlastname">Apellido:</label>
+                                        <input type="text " class="form-control " value="VisaNet" id="clientlastname" name="clientlastname" />
+                                    </div>
+                                </div>
+                                <div class="col-md-3 ">
+                                    <div class="form-group ">
+                                        <label for="amount">Importe:</label>
+                                        <input type="text" class="form-control " value="1" id="amount" name="amount">
+                                    </div>
+                                </div>
+                                <div class="col-md-3 ">
+                                    <div class="form-group">
+                                        <label for="email">Email:</label>
+                                        <input type="text " class="form-control " value="integraciones.visanet@necomplus.com" id="email" name="email">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row ">
+                                <div class="col-md-3 ">
+                                    <div class="form-group ">
+                                        <div>
+                                            <button class="btn btn-outline-success btn-block" type="submit">Pagar</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <br>
+        <div class="row ">
+            <div class="col-md-12 ">
+                <div id="btn_pago ">
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</body>
+
+</html>

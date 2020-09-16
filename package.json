@@ -1,0 +1,22 @@
+{
+    "name": "pago-visa",
+    "version": "1.0.0",
+    "description": "Visa API",
+    "main": "index.js",
+    "scripts": {
+        "dev": "nodemon src/index.js",
+        "start": "node index.js",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "Anderley Candela",
+    "license": "ISC",
+    "dependencies": {
+        "express": "^4.16.3",
+        "jsonwebtoken": "^8.3.0",
+        "request": "^2.87.0",
+        "request-promise": "^4.2.2"
+    },
+    "devDependencies": {
+        "nodemon": "^2.0.4"
+    }
+}

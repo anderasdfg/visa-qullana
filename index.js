@@ -19,6 +19,25 @@ app.set('port', process.env.PORT || 5000)
 
 app.get('/', (req, res) => res.send(req.body))
 
+app.get('/infovisa', async(req, res) => {
+    var visa = {
+        merchantId: req.query.merchantId,
+        currency: req.query.currency,
+        clientname: req.query.clientname,
+        clientlastname: req.query.clientlastname,
+        amount: req.query.amount,
+        email: req.query.email,
+        purchaseNumber: req.query.purchasenumber,
+        user: req.query.user,
+        password: req.query.password
+    }
+    console.log(JSON.stringify(visa))
+    var credentials = Buffer.from(visa.user + ':' + visa.password).toString('base64')
+    let boton = await getToken(credentials, visa)
+
+    res.send(boton)
+})
+
 //use userinfo from the form and make a post request to /userinfo
 app.post('/infovisa', async(req, res) => {
 
@@ -165,4 +184,16 @@ function generarBoton(sessionKey, visa) {
     console.log(visa.purchaseNumber)
     console.log('Resultado GenerarBoton: ' + result)
     return result
+}
+
+function getQueryVariable(variable) {
+    var query = window.location.search.substring(1);
+    var vars = query.split("&");
+    for (var i = 0; i < vars.length; i++) {
+        var pair = vars[i].split("=");
+        if (pair[0] == variable) {
+            return pair[1];
+        }
+    }
+    return false;
 }

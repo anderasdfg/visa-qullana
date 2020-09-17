@@ -11,7 +11,7 @@
     <div class="container">
         <h1>Pago de Citas 🩺</h1>
         <hr>
-        <form action="/infovisa" method="post">
+        <form action="http://localhost:5000/infovisa" method="get">
             <div class="row">
                 <div class="col-md-12">
                     <div class="card">
@@ -82,7 +82,89 @@
                                 <div class="col-md-3 ">
                                     <div class="form-group ">
                                         <div>
-                                            <button class="btn btn-outline-success btn-block" type="submit">Pagar</button>
+                                            <button class="btn btn-outline-success btn-block">Pagar</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <form action="http://localhost:5000/infovisa" method="post">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label for="merchantId">Código de comercio: </label>
+                                        <input type="text" class="form-control" value="522591303" id="merchantId" name="merchantId" />
+                                    </div>
+                                </div>
+                                <div class="col-md-3 ">
+                                    <div class="form-group ">
+                                        <label for="currency">Moneda:</label>
+                                        <select class="form-control" id="currency" name="currency">
+											<option value="PEN " selected>Soles</option>
+											<option value="USD ">Dolares</option>
+										</select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row ">
+                                <div class="col-md-3 ">
+                                    <div class="form-group ">
+                                        <label for="clientname">Nombre:</label>
+                                        <input type="text " class="form-control" value="Integraciones" id="clientname" name="clientname" />
+                                    </div>
+                                </div>
+                                <div class="col-md-3 ">
+                                    <div class="form-group ">
+                                        <label for="clientlastname">Apellido:</label>
+                                        <input type="text " class="form-control " value="VisaNet" id="clientlastname" name="clientlastname" />
+                                    </div>
+                                </div>
+                                <div class="col-md-3 ">
+                                    <div class="form-group ">
+                                        <label for="amount">Importe:</label>
+                                        <input type="text" class="form-control " value="1" id="amount" name="amount">
+                                    </div>
+                                </div>
+                                <div class="col-md-3 ">
+                                    <div class="form-group">
+                                        <label for="email">Email:</label>
+                                        <input type="text " class="form-control " value="integraciones.visanet@necomplus.com" id="email" name="email">
+                                    </div>
+                                </div>
+                                <div class="col-md-3 ">
+                                    <div class="form-group">
+                                        <label for="purchasenumber">Número de pedido:</label>
+                                        <input type="text " class="form-control " value="123" id="purchasenumber" name="purchasenumber">
+                                    </div>
+                                </div>
+                                <div class="col-md-3 ">
+                                    <div class="form-group">
+                                        <label for="user">Usuario:</label>
+                                        <input type="text " class="form-control " value="integraciones.visanet@necomplus.com" id="user" name="user">
+                                    </div>
+                                </div>
+                                <div class="col-md-3 ">
+                                    <div class="form-group">
+                                        <label for="password">Password:</label>
+                                        <input type="text " class="form-control " value="d5e7nk$M" id="password" name="password">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row ">
+                                <div class="col-md-3 ">
+                                    <div class="form-group ">
+                                        <div>
+                                            <button class="btn btn-outline-success btn-block">Pagar</button>
                                         </div>
                                     </div>
                                 </div>

@@ -10,8 +10,10 @@ const config = {
         APIEcommerce: 'https://apitestenv.vnforapps.com/api.authorization/v3/authorization/ecommerce/'
     },
     production: {
-        APIKey: '',
-        APISecret: ''
+        APIToken: 'https://apiprod.vnforapps.com/api.security/v1/security',
+        APISession: 'https://apiprod.vnforapps.com/api.ecommerce/v2/ecommerce/token/session/',
+        urlJs: 'https://static-content.vnforapps.com/v2/js/checkout.js',
+        APIEcommerce: 'https://apiprod.vnforapps.com/api.authorization/v3/authorization/ecommerce/'
     }
 };
 

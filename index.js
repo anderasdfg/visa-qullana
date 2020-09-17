@@ -31,7 +31,7 @@ app.post('/infovisa', async(req, res) => {
         user: req.body.user,
         password: req.body.password
     }
-
+    console.log(JSON.stringify(visa))
     var credentials = Buffer.from(visa.user + ':' + visa.password).toString('base64')
     let boton = await getToken(credentials, visa)
 
@@ -39,12 +39,15 @@ app.post('/infovisa', async(req, res) => {
 })
 
 app.post('/responsevisa', async(req, res) => {
+    console.log(req.body.transactionToken)
+    console.log(config.APIEcommerce + codigoComercio)
+    console.log(tokenSeguridad)
     var options = {
             method: 'POST',
             uri: config.APIEcommerce + codigoComercio,
             headers: {
-                Authorization: tokenSeguridad,
-                'Content-type': 'application/json',
+                'Authorization': tokenSeguridad,
+                'Content-Type': 'application/json',
             },
             body: {
                 antifraud: null,

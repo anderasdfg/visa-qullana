@@ -13,7 +13,9 @@ var monto = 0
 var codigoComercio = ''
 var responseJSON = ''
 var secuenciaPago = ''
-const port = 3000
+
+//se configura el puerto 
+app.set('port', process.env.PORT || 5000)
 
 app.get('/', (req, res) => res.send(req.body))
 

@@ -80,7 +80,7 @@ app.post('/responsevisa', async(req, res) => {
     res.send(responseJSON)
 })
 
-app.listen(app.get('port'), () => console.log(`Visa app listening on port ${port}!`))
+app.listen(app.get('port'), () => console.log(`Visa app listening on port ${app.get('port')}!`))
 
 //funciones
 

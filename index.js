@@ -13,6 +13,7 @@ var monto = 0
 var codigoComercio = ''
 var responseJSON = ''
 var secuenciaPago = ''
+var client = ''
 
 //se configura el puerto 
 app.set('port', process.env.PORT || 5000)
@@ -20,39 +21,25 @@ app.set('port', process.env.PORT || 5000)
 app.get('/', (req, res) => res.send(req.body))
 
 app.get('/infovisa', async(req, res) => {
-    var visa = {
-        merchantId: req.query.merchantId,
-        currency: req.query.currency,
-        clientname: req.query.clientname,
-        clientlastname: req.query.clientlastname,
-        amount: req.query.amount,
-        email: req.query.email,
-        purchaseNumber: req.query.purchasenumber,
-        user: req.query.user,
-        password: req.query.password
-    }
-    console.log(JSON.stringify(visa))
-    var credentials = Buffer.from(visa.user + ':' + visa.password).toString('base64')
-    let boton = await getToken(credentials, visa)
-
-    res.send(boton)
-})
-
-//use userinfo from the form and make a post request to /userinfo
-app.post('/infovisa', async(req, res) => {
+    //CADENA EN DATA
+    //KEY|USER|PASSWORD|MERCHANTID|PURCHASENUMBER|CLIENTNAME|CLIENTLASTNAME|CURRENCY|AMOUNT|EMAIL
+    var data = req.query.data
+    var output = Buffer.from(data, 'base64').toString('ascii')
+    var part = output.split("|")
 
     var visa = {
-        merchantId: req.body.merchantId,
-        currency: req.body.currency,
-        clientname: req.body.clientname,
-        clientlastname: req.body.clientlastname,
-        amount: req.body.amount,
-        email: req.body.email,
-        purchaseNumber: req.body.purchasenumber,
-        user: req.body.user,
-        password: req.body.password
+        user: part[1],
+        password: part[2],
+        merchantId: part[3],
+        purchaseNumber: part[4],
+        clientname: part[5],
+        clientlastname: part[6],
+        currency: part[7],
+        amount: part[8],
+        email: part[9],
     }
-    console.log(JSON.stringify(visa))
+    codigoComercio = visa.merchantId
+    client = visa.clientname + ' ' + visa.clientlastname
     var credentials = Buffer.from(visa.user + ':' + visa.password).toString('base64')
     let boton = await getToken(credentials, visa)
 
@@ -60,9 +47,7 @@ app.post('/infovisa', async(req, res) => {
 })
 
 app.post('/responsevisa', async(req, res) => {
-    console.log(req.body.transactionToken)
-    console.log(config.APIEcommerce + codigoComercio)
-    console.log(tokenSeguridad)
+    var success = false
     var options = {
             method: 'POST',
             uri: config.APIEcommerce + codigoComercio,
@@ -89,15 +74,89 @@ app.post('/responsevisa', async(req, res) => {
         //Use request-promise module's .then() method to make request calls.
     await rp(options)
         .then(async function(response) {
+            success = true
             responseJSON = JSON.stringify(response)
         })
         .catch(function(err) {
-            // API call failed...
-            console.log('API call failed, reason ', err)
+            success = false
+            responseJSON = JSON.stringify(err)
         })
-
-    res.send(responseJSON)
+    let transaction = JSON.parse(responseJSON)
+    var style = `<style>*{box-sizing:border-box;margin:0;padding:0}html{background-color:#f6f9fc;font-size:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,Ubuntu,Cantarell,'Open Sans','Helvetica Neue',sans-serif}main{box-sizing:border-box;display:grid;place-items:center;margin:13vh auto 17vh auto;height:60vh}.container{padding:5rem;border-radius:.6rem;border:#2ca2eb .1rem solid}.title{border-radius:.6rem;padding:.6rem;background-color:#2ca2eb;text-align:center;font-weight:700;margin-bottom:2rem;font-size:2rem}P{padding:.3rem;font-weight:400;font-size:1.4rem}.btnBlue{padding:1rem 3rem 1rem 3rem;}.small{padding-top:1rem;text-align:center;font-size:1rem}.colums{column-count:2}.right{text-align:right}.left{text-align:left}.btnBlue{text-decoration:none;align-self:center;text-align:center;background-color:#2ca2eb;border-radius:.6rem;border:0 solid;padding:.6rem;color:#000;cursor:pointer}.btnBlue:hover{background-color:#e1ecf4;color:#2ca2eb}.instruction{margin-bottom:0;padding-bottom:0}</style>`
+    if (success) {
+        var responseHTML = `
+                            <main>
+                            <div class="container">
+                                <div>
+                                    <p class="title">Pago satisfactorio 👍</p>
+                                </div>
+                                <div class="colums">
+                                    <div class="right">
+                                        <p><b>Orden: </b></p>
+                                        <p><b>Nombre del cliente: </b></p>
+                                        <p><b>Tarjeta: </b></p>
+                                        <p><b>Medio de pago: </b></p>
+                                        <p><b>Monto (S/.): </b></p>
+                                        <p><b>Fecha y hora: </b></p>
+                                        <p><b>Descripción: </b></p>
+                                    </div>
+                                    <div class="left">
+                                        <p>${transaction.order.purchaseNumber}</p>
+                                        <p>${client}</p>
+                                        <p>${transaction.dataMap.CARD}</p>
+                                        <p>${transaction.dataMap.BRAND.toUpperCase()}</p>
+                                        <p>${transaction.dataMap.AMOUNT} </p>
+                                        <p>${transaction.dataMap.TRANSACTION_DATE}</p>
+                                        <p>Aprobado</p>
+                                    </div>
+                                </div>
+                                <div class="small">
+                                    <button class="btnBlue">Finalizar</button>
+                                    <p class="small">
+                                        <p class="small"><b class="instruction">Presione finalizar para intentar nuevamente.</b></p> Esta tienda está autorizada por Visa para realizar transacciones electrónicas.
+                                        </br>Copyright 2020 © <a target="_blank" href="https://www.lolimsa.com.pe/">LOLIMSA</a></p>
+                                </div>
+                            </div>
+                        </main> ${style}                       
+                        `
+    } else {
+        var responseHTML = `
+        <main>
+        <div class="container">
+            <div>
+                <p class="title">Pago rechazado 👎</p>
+            </div>
+            <div class="colums">
+                <div class="right">
+                    <p><b>Orden: </b></p>
+                    <p><b>Nombre del cliente: </b></p>
+                    <p><b>Tarjeta: </b></p>
+                    <p><b>Medio de pago: </b></p>
+                    <p><b>Monto (S/.): </b></p>
+                    <p><b>Descripción: </b></p>
+                </div>
+                <div class="left">
+                    <p>${transaction.options.body.order.purchaseNumber}</p>
+                    <p>${client}</p>
+                    <p>${transaction.response.body.data.CARD}</p>
+                    <p>${transaction.response.body.data.BRAND.toUpperCase()}</p>
+                    <p>${transaction.response.body.data.AMOUNT} </p>
+                    <p>${transaction.response.body.data.ACTION_DESCRIPTION}</p>
+                </div>
+            </div>
+            <div class="small">
+                <button class="btnBlue">Finalizar</button>
+                <p class="small">
+                    <p class="small"><b class="instruction">Presione finalizar para concretar la transacción.</b></p> Esta tienda está autorizada por Visa para realizar transacciones electrónicas.
+                    </br>Copyright 2020 © <a target="_blank" href="https://www.lolimsa.com.pe/">LOLIMSA</a></p>
+            </div>
+        </div>
+    </main> ${style}                       
+    `
+    }
+    res.send(responseHTML)
 })
+
 
 app.listen(app.get('port'), () => console.log(`Visa app listening on port ${app.get('port')}!`))
 
@@ -178,22 +237,10 @@ function generarBoton(sessionKey, visa) {
         "data-purchasenumber='" + visa.purchaseNumber + "'" +
         "data-amount='" + visa.amount + "'" +
         "data-expirationminutes='5'" +
-        "data-timeouturl = 'timeout.html'>" +
+        "data-timeouturl = 'https://anderasdfg.github.io/timeout-page/'>" +
         "</script>" +
         "</form>"
     console.log(visa.purchaseNumber)
     console.log('Resultado GenerarBoton: ' + result)
     return result
-}
-
-function getQueryVariable(variable) {
-    var query = window.location.search.substring(1);
-    var vars = query.split("&");
-    for (var i = 0; i < vars.length; i++) {
-        var pair = vars[i].split("=");
-        if (pair[0] == variable) {
-            return pair[1];
-        }
-    }
-    return false;
 }

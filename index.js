@@ -88,7 +88,7 @@ app.post('/responsevisa', async(req, res) => {
             responseJSON = JSON.stringify(err)
         })
     let transaction = JSON.parse(responseJSON)
-    var style = `<style>*{box-sizing:border-box;margin:0;padding:0}html{background-color:#f6f9fc;font-size:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,Ubuntu,Cantarell,'Open Sans','Helvetica Neue',sans-serif}main{box-sizing:border-box;display:grid;place-items:center;margin:13vh auto 17vh auto;height:60vh}.container{padding:5rem;border-radius:.6rem;border:#2ca2eb .1rem solid}.title{border-radius:.6rem;padding:.6rem;background-color:#2ca2eb;text-align:center;font-weight:700;margin-bottom:2rem;font-size:2rem}P{padding:.3rem;font-weight:400;font-size:1.4rem}.btnBlue{padding:1rem 3rem 1rem 3rem;}.small{padding-top:1rem;text-align:center;font-size:1rem}.colums{column-count:2}.right{text-align:right}.left{text-align:left}.btnBlue{text-decoration:none;align-self:center;text-align:center;background-color:#2ca2eb;border-radius:.6rem;border:0 solid;padding:.6rem;color:#000;cursor:pointer}.btnBlue:hover{background-color:#e1ecf4;color:#2ca2eb}.instruction{margin-bottom:0;padding-bottom:0}</style>`
+    var style = `<style>*{box-sizing:border-box;margin:0;padding:0}html{background-color:#f6f9fc;font-size:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,Ubuntu,Cantarell,'Open Sans','Helvetica Neue',sans-serif}main{box-sizing:border-box;display:grid;place-items:center;margin:5vh auto 17vh auto;height:60vh}.container{padding:5rem;border-radius:.6rem;border:#2ca2eb .1rem solid}.title{border-radius:.6rem;padding:.6rem;background-color:#2ca2eb;text-align:center;font-weight:700;margin-bottom:2rem;font-size:2rem}P{padding:.3rem;font-weight:400;font-size:1.4rem}.btnBlue{padding:1rem 3rem 1rem 3rem;}.small{padding-top:1rem;text-align:center;font-size:1rem}.colums{column-count:2}.right{text-align:right}.left{text-align:left}.btnBlue{text-decoration:none;align-self:center;text-align:center;background-color:#2ca2eb;border-radius:.6rem;border:0 solid;padding:.6rem;color:#000;cursor:pointer}.btnBlue:hover{background-color:#e1ecf4;color:#2ca2eb}.instruction{margin-bottom:0;padding-bottom:0}</style>`
     if (success) {
         content = `<div class="colums">
                         <div class="right">
@@ -116,8 +116,8 @@ app.post('/responsevisa', async(req, res) => {
                                     <p class="title">Pago satisfactorio 👍</p>
                                 </div>
                                 ${content}
-                                <div class="small">
-                                    <button class="btnBlue">Finalizar</button>
+                                <div class="small">                                
+                                    <a href="${config[env].return}" class="btnBlue" >Finalizar</a>
                                     <p class="small">
                                         <p class="small"><b class="instruction">Presione finalizar para concretar la transacción.</b></p> Esta tienda está autorizada por Visa para realizar transacciones electrónicas.
                                         </br>Copyright 2020 © <a target="_blank" href="https://www.lolimsa.com.pe/">LOLIMSA</a></p>
@@ -238,7 +238,7 @@ function generarBoton(sessionKey, visa) {
         "data-cardholdername='" + visa.clientname + "'" +
         "data-cardholderlastname='" + visa.clientlastname + "'" +
         "data-cardholderemail='" + visa.email + "'" +
-        "data-merchantlogo= 'img/comercio.png'" +
+        "data-merchantlogo='" + config[env].return+"'" +
         "data-formbuttoncolor='#D80000'" +
         "data-purchasenumber='" + visa.purchaseNumber + "'" +
         "data-amount='" + visa.amount + "'" +

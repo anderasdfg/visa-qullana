@@ -9,5 +9,6 @@ Clone the repo using git clone.
 
 > Install the dependent node modules.
 
-To install the dependencies in your project directory, type `npm-install <module-name>` in your terminal.
+To install the dependencies in your project directory, type `npm-install` in your terminal.
+
 

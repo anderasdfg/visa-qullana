@@ -1,7 +1,4 @@
-const env = process.env.NODE_ENV || 'development'
-
-
-//insert your API Key & Secret for each environment, keep this file local and never push it to a public repo for security purposes.
+// const env = process.env.NODE_ENV || 'development'
 const config = {
     development: {
         APIToken: 'https://apitestenv.vnforapps.com/api.security/v1/security',
@@ -17,4 +14,4 @@ const config = {
     }
 };
 
-module.exports = config[env]
+module.exports = config

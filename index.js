@@ -238,7 +238,7 @@ function generarBoton(sessionKey, visa) {
         "data-cardholdername='" + visa.clientname + "'" +
         "data-cardholderlastname='" + visa.clientlastname + "'" +
         "data-cardholderemail='" + visa.email + "'" +
-        "data-merchantlogo='" + config[env].return+"'" +
+        "data-merchantlogo='https://www.lolimsa.com.pe/wp-content/uploads/2018/09/qullana.png'" +
         "data-formbuttoncolor='#D80000'" +
         "data-purchasenumber='" + visa.purchaseNumber + "'" +
         "data-amount='" + visa.amount + "'" +
@@ -255,7 +255,7 @@ async function sendResponse(body) {
     var responseJSON = ''
     var options = {
         method: 'POST',
-        uri: 'http://localhost:8010/LOLIMSASERx/rest/recepcion',
+        uri: 'http://200.121.128.122:8010/LOLIMSASER/rest/recepcion',
         headers: {
             'Content-Type': 'application/json',
         },

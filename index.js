@@ -119,7 +119,7 @@ app.post('/responsevisa', async(req, res) => {
                                 <div class="small">                                
                                     <a href="${config[env].return}" class="btnBlue" >Finalizar</a>
                                     <p class="small">
-                                        <p class="small"><b class="instruction">Presione finalizar para concretar la transacción.</b></p> Esta tienda está autorizada por Visa para realizar transacciones electrónicas.
+                                        <p class="small"><b class="instruction">IMPORTANTE: Presione finalizar para concretar la transacción.</b></p> Esta tienda está autorizada por Visa para realizar transacciones electrónicas.
                                         </br>Copyright 2020 © <a target="_blank" href="https://www.lolimsa.com.pe/">LOLIMSA</a></p>
                                 </div>
                             </div>
@@ -150,9 +150,9 @@ app.post('/responsevisa', async(req, res) => {
                                 </div>
                                 ${content}
                                 <div class="small">
-                                    <button class="btnBlue">Finalizar</button>
+                                <a href="${config[env].return}" class="btnBlue" >Finalizar</a>
                                     <p class="small">
-                                        <p class="small"><b class="instruction">Presione finalizar para intentar nuevamente.</b></p> Esta tienda está autorizada por Visa para realizar transacciones electrónicas.
+                                        <p class="small"><b class="instruction">IMPORTANTE: Presione finalizar para intentar nuevamente.</b></p> Esta tienda está autorizada por Visa para realizar transacciones electrónicas.
                                         </br>Copyright 2020 © <a target="_blank" href="https://www.lolimsa.com.pe/">LOLIMSA</a></p>
                                 </div>
                             </div>

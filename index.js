@@ -222,7 +222,7 @@ async function generarSesion(token, visa) {
             // API call failed...
             console.log('API call failed, reason ', err)
         })
-    console.log('Resultado GetSession: ' + boton)
+        // console.log('Resultado GetSession: ' + boton)
     return boton
 }
 
@@ -230,24 +230,41 @@ function generarBoton(sessionKey, visa) {
     monto = visa.amount
     codigoComercio = visa.merchantId
     secuenciaPago = visa.purchaseNumber
-    var result = "<form action='/responsevisa' method='post'>" +
-        "<script src='" + config[env].urlJs + "'" +
-        "data-sessiontoken='" + sessionKey + "'" +
-        "data-channel='web'" +
-        "data-merchantid='" + visa.merchantId + "'" +
-        "data-cardholdername='" + visa.clientname + "'" +
-        "data-cardholderlastname='" + visa.clientlastname + "'" +
-        "data-cardholderemail='" + visa.email + "'" +
-        "data-merchantlogo='https://www.lolimsa.com.pe/wp-content/uploads/2018/09/qullana.png'" +
-        "data-formbuttoncolor='#D80000'" +
-        "data-purchasenumber='" + visa.purchaseNumber + "'" +
-        "data-amount='" + visa.amount + "'" +
-        "data-expirationminutes='5'" +
-        "data-timeouturl = 'https://anderasdfg.github.io/timeout-page/'>" +
-        "</script>" +
-        "</form>"
-    console.log(visa.purchaseNumber)
-    console.log('Resultado GenerarBoton: ' + result)
+    var result = `
+        <main>
+        <div class='loader linkid'></div>        
+        <div id='linkid' class='linkid'>
+            <form name='myForm' class="center" id='myForm' action='/responsevisa' method='post'>
+                <script src='${config[env].urlJs}'
+                data-sessiontoken='${sessionKey}'
+                data-channel='web'
+                data-merchantid='${visa.merchantId}'
+                data-cardholdername='${visa.clientname}'
+                data-cardholderlastname='${visa.clientlastname}
+                data-cardholderemail='${visa.email}'
+                data-merchantlogo='https://www.lolimsa.com.pe/wp-content/uploads/2018/09/qullana.png'
+                data-formbuttoncolor='#D80000'
+                data-purchasenumber='${visa.purchaseNumber}'
+                data-amount='${visa.amount}'
+                data-expirationminutes='5'
+                data-timeouturl = 'https://anderasdfg.github.io/timeout-page/'>
+                </script>
+            </form>
+        </div>
+        </main>
+        <script>
+        submitform();
+        
+        function submitform()
+        {     
+          document.getElementById("linkid").style.display = "none";     
+          var y = document.getElementsByClassName("start-js-btn modal-opener default");
+          var aNode = y[0].click(); 
+        }
+        </script>
+        <style>main{display:grid;place-items:center}.loader{border:16px solid #f3f3f3;border-top:16px solid #3498db;border-radius:50%;width:120px;height:120px;animation:spin 2s linear infinite;margin:30vh auto 0 auto}@keyframes spin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}</style>`
+        // console.log(visa.purchaseNumber)
+        // console.log('Resultado GenerarBoton: ' + result)
     return result
 }
 
@@ -273,5 +290,5 @@ async function sendResponse(body) {
             success = false
             responseJSON = JSON.stringify(err)
         })
-    console.log(responseJSON)
+        // console.log(responseJSON)
 }

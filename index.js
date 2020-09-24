@@ -232,16 +232,14 @@ function generarBoton(sessionKey, visa) {
     secuenciaPago = visa.purchaseNumber
     var result = `
         <main>
-        <div class='loader linkid'></div>        
+        <div class='loader linkid'></div> 
+        <p>Espere un momento por favor...</p>       
         <div id='linkid' class='linkid'>
             <form name='myForm' class="center" id='myForm' action='/responsevisa' method='post'>
                 <script src='${config[env].urlJs}'
                 data-sessiontoken='${sessionKey}'
                 data-channel='web'
                 data-merchantid='${visa.merchantId}'
-                data-cardholdername='${visa.clientname}'
-                data-cardholderlastname='${visa.clientlastname}
-                data-cardholderemail='${visa.email}'
                 data-merchantlogo='https://www.lolimsa.com.pe/wp-content/uploads/2018/09/qullana.png'
                 data-formbuttoncolor='#D80000'
                 data-purchasenumber='${visa.purchaseNumber}'
@@ -263,8 +261,7 @@ function generarBoton(sessionKey, visa) {
         }
         </script>
         <style>main{display:grid;place-items:center}.loader{border:16px solid #f3f3f3;border-top:16px solid #3498db;border-radius:50%;width:120px;height:120px;animation:spin 2s linear infinite;margin:30vh auto 0 auto}@keyframes spin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}</style>`
-        // console.log(visa.purchaseNumber)
-        // console.log('Resultado GenerarBoton: ' + result)
+
     return result
 }
 
@@ -290,5 +287,4 @@ async function sendResponse(body) {
             success = false
             responseJSON = JSON.stringify(err)
         })
-        // console.log(responseJSON)
 }

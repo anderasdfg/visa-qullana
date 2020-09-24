@@ -153,7 +153,7 @@ app.post('/responsevisa', async(req, res) => {
                                 <a href="${config[env].return}" class="btnBlue" >Finalizar</a>
                                     <p class="small">
                                         <p class="small"><b class="instruction">IMPORTANTE: Presione finalizar para intentar nuevamente.</b></p> Esta tienda está autorizada por Visa para realizar transacciones electrónicas.
-                                        </br>Copyright 2020 © <a target="_blank" href="https://www.lolimsa.com.pe/">LOLIMSA</a></p>
+                                        </br>Copyright 2020 © LOLIMSA </p>
                                 </div>
                             </div>
                         </main> ${style}`

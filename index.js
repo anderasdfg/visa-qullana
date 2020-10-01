@@ -53,7 +53,7 @@ app.get('/infovisa', async(req, res) => {
     res.send(boton)
 })
 
-app.post('/responsevisa', async(req, res) => {
+app.post('/responsevisa/:puchasenumber', async(req, res) => {
     var success = false
     var purchaseNumber = ''
     var content = ''
@@ -250,7 +250,6 @@ async function generarSesion(token, visa) {
         body: {
             amount: visa.amount,
             antifraud: {
-                clientIp: '192.168.0.56',
                 merchantDefineData: {
                     MDD4: visa.email,
                     MDD32: visa.dni,
@@ -291,7 +290,7 @@ function generarBoton(sessionKey, visa) {
         <div class='loader linkid'></div> 
         <p>Espere un momento por favor...</p>       
         <div id='linkid' class='linkid'>
-            <form name='myForm' class="center" id='myForm' action='/responsevisa' method='post'>
+            <form name='myForm' class="center" id='myForm' action='https://qullana-pago.herokuapp.com/responsevisa/${visa.purchaseNumber}' method='post'>
                 <script src='${config[env].urlJs}'
                 data-sessiontoken='${sessionKey}'
                 data-channel='web'

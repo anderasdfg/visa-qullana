@@ -7,6 +7,7 @@ const app = express()
 
 app.use(express.urlencoded({ extended: true }))
 app.use(express.static('public'))
+app.set('trust proxy', true);
 
 var tokenSeguridad = ''
 var monto = 0
@@ -23,6 +24,7 @@ app.get('/', (req, res) => res.send(req.body))
 
 app.get('/infovisa', async(req, res) => {
 
+    var ip = req.connection.remoteAddress;
     var data = req.query.data
     var output = Buffer.from(data, 'base64').toString('ascii')
     var part = output.split("|")
@@ -41,6 +43,7 @@ app.get('/infovisa', async(req, res) => {
         currency: part[7],
         amount: part[8],
         email: part[9],
+        dni: part[10]
     }
     codigoComercio = visa.merchantId
     client = visa.clientname + ' ' + visa.clientlastname
@@ -164,6 +167,48 @@ app.post('/responsevisa', async(req, res) => {
 })
 
 
+app.post('/qrestatico/:token/:merchantid/:fecha/', async(req, res) => {
+
+    var stoken = req.params.token;
+    var smerchantid = req.params.merchantid;
+    var sfecha = req.params.fecha
+
+    var options = {
+            method: 'POST',
+            uri: config[env].qr,
+            headers: {
+                'Authorization': stoken,
+                'Content-Type': 'application/json',
+            },
+            body: {
+                'enabled': true,
+                'param': [{
+                        'name': 'merchantId',
+                        'value': smerchantid
+                    },
+                    {
+                        'name': 'transactionCurrency',
+                        'value': '604'
+                    }
+                ],
+                'tagType': 'STATIC',
+                'validityDate': sfecha
+            },
+            json: true,
+        }
+        //Use request-promise module's .then() method to make request calls.
+    await rp(options)
+        .then(async function(response) {
+            responseJSON = JSON.stringify(response)
+        })
+        .catch(function(err) {
+            responseJSON = JSON.stringify(err)
+        })
+
+    res.send(responseJSON)
+})
+
+
 app.listen(app.get('port'), () => console.log(`Visa app listening on port ${app.get('port')}!`))
 
 //funciones
@@ -194,6 +239,7 @@ async function getToken(credentials, visa) {
 
 async function generarSesion(token, visa) {
     var boton = ''
+
     var options = {
         method: 'POST',
         uri: config[env].APISession + visa.merchantId,
@@ -203,7 +249,17 @@ async function generarSesion(token, visa) {
         },
         body: {
             amount: visa.amount,
-            antifraud: null, //luego completar
+            antifraud: {
+                clientIp: '192.168.0.56',
+                merchantDefineData: {
+                    MDD4: visa.email,
+                    MDD32: visa.dni,
+                    MDD21: '0',
+                    MDD75: 'REGISTRO',
+                    MDD77: '1',
+                    MDD33: 'DNI'
+                }
+            }, //luego completar
             channel: 'web',
             recurrenceMaxAmount: null,
         },

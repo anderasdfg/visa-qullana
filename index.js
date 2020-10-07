@@ -53,7 +53,7 @@ app.get('/infovisa', async(req, res) => {
     res.send(boton)
 })
 
-app.post('/responsevisa/:puchasenumber', async(req, res) => {
+app.post('/responsevisa/', async(req, res) => {
     var success = false
     var purchaseNumber = ''
     var content = ''
@@ -208,7 +208,6 @@ app.post('/qrestatico/:token/:merchantid/:fecha/', async(req, res) => {
     res.send(responseJSON)
 })
 
-
 app.listen(app.get('port'), () => console.log(`Visa app listening on port ${app.get('port')}!`))
 
 //funciones
@@ -290,7 +289,7 @@ function generarBoton(sessionKey, visa) {
         <div class='loader linkid'></div> 
         <p>Espere un momento por favor...</p>       
         <div id='linkid' class='linkid'>
-            <form name='myForm' class="center" id='myForm' action='https://qullana-pago.herokuapp.com/responsevisa/${visa.purchaseNumber}' method='post'>
+            <form name='myForm' class="center" id='myForm' action='https://qullana-pago.herokuapp.com/responsevisa' method='post'>
                 <script src='${config[env].urlJs}'
                 data-sessiontoken='${sessionKey}'
                 data-channel='web'

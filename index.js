@@ -96,7 +96,6 @@ app.post('/responsevisa/:puchasenumber', async(req, res) => {
         content = `<div class="colums">
                         <div class="right">
                             <p><b>Orden: </b></p>
-                            <p><b>Nombre del cliente: </b></p>
                             <p><b>Tarjeta: </b></p>
                             <p><b>Medio de pago: </b></p>
                             <p><b>Monto (S/.): </b></p>
@@ -105,7 +104,6 @@ app.post('/responsevisa/:puchasenumber', async(req, res) => {
                         </div>
                         <div class="left">
                             <p>${transaction.order.purchaseNumber}</p>
-                            <p>${client}</p>
                             <p>${transaction.dataMap.CARD}</p>
                             <p>${transaction.dataMap.BRAND.toUpperCase()}</p>
                             <p>${transaction.dataMap.AMOUNT} </p>
@@ -131,7 +129,6 @@ app.post('/responsevisa/:puchasenumber', async(req, res) => {
         content = `<div class="colums">
                         <div class="right">
                             <p><b>Orden: </b></p>
-                            <p><b>Nombre del cliente: </b></p>
                             <p><b>Tarjeta: </b></p>
                             <p><b>Medio de pago: </b></p>
                             <p><b>Monto (S/.): </b></p>
@@ -139,7 +136,6 @@ app.post('/responsevisa/:puchasenumber', async(req, res) => {
                         </div>
                         <div class="left">
                             <p>${transaction.options.body.order.purchaseNumber}</p>
-                            <p>${client}</p>
                             <p>${transaction.response.body.data.CARD}</p>
                             <p>${transaction.response.body.data.BRAND.toUpperCase()}</p>
                             <p>${transaction.response.body.data.AMOUNT} </p>

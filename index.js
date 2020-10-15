@@ -42,7 +42,7 @@ app.get('/infovisa', async(req, res) => {
         clientlastname: part[6],
         currency: part[7],
         amount: part[8],
-        email: part[9],
+        email: 'lolimsa@lolimsa.com.pe' //part[9],
         dni: part[10]
     }
     codigoComercio = visa.merchantId

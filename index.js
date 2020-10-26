@@ -245,16 +245,16 @@ async function generarSesion(token, visa) {
         },
         body: {
             amount: visa.amount,
-            //antifraud: {
-            //    merchantDefineData: {
-            //        MDD4: visa.email,
-            //        MDD32: visa.dni,
-            //        MDD21: '0',
-            //        MDD75: 'REGISTRO',
-            //        MDD77: '1',
-            //        MDD33: 'DNI'
-            //    }
-            //}, //luego completar
+            antifraud: {
+                merchantDefineData: {
+                    MDD4: visa.email,
+                    MDD32: visa.dni,
+                    MDD21: '0',
+                    MDD75: 'REGISTRO',
+                    MDD77: '1',
+                    MDD33: 'DNI'
+                }
+            }, //luego completar
             channel: 'web',
             recurrenceMaxAmount: null,
         },

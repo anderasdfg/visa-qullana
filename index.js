@@ -105,7 +105,7 @@ app.post('/responsevisa/:purchase', async(req, res) => {
                             <p><b>Medio de pago: </b></p>
                             <p><b>Monto (S/.): </b></p>
                             <p><b>Fecha y hora: </b></p>
-                            <p><b>Descripci¨®n: </b></p>
+                            <p><b>DescripciÃ³n: </b></p>
                         </div>
                         <div class="left">
                             <p>${transaction.order.purchaseNumber}</p>                            
@@ -125,21 +125,21 @@ app.post('/responsevisa/:purchase', async(req, res) => {
                                 <div class="small">                                
                                     <a href="${config[env].return}" class="btnBlue" >Finalizar</a>
                                     <p class="small">
-                                        <p class="small"><b class="instruction">IMPORTANTE: Presione finalizar para concretar la transacci¨®n.</b></p> Esta tienda est¨¢ autorizada por Visa para realizar transacciones electr¨®nicas.
+                                        <p class="small"><b class="instruction">IMPORTANTE: Presione finalizar para concretar la transacciï¿½ï¿½n.</b></p> Esta tienda estï¿½ï¿½ autorizada por Visa para realizar transacciones electrÃ³nicas.
                                         </br>Copyright 2020 ? <a target="_blank" href="https://www.lolimsa.com.pe/">LOLIMSA</a></p>
                                 </div>
                             </div>
                         </main> ${style}`
     } else {
-        if (transaction.statusCode == '403' || (transaction.error.errorCode == '400' && transaction.error.errorMessage == 'MERCHANT_ID does not match') ||(transaction.error.errorCode == '400' && transaction.error.errorMessage == 'AMOUNT does not match')) {
+        if (transaction.statusCode == '403' || (transaction.error.errorCode == '400' && transaction.error.errorMessage == 'MERCHANT_ID does not match') || (transaction.error.errorCode == '400' && transaction.error.errorMessage == 'AMOUNT does not match')) {
             content = `<div class="colums">
                         <div class="right">
                             <p><b>Orden: </b></p>                            
-                            <p><b>Descripci¨®n: </b></p>                            
+                            <p><b>DescripciÃ³n: </b></p>                            
                         </div>
                         <div class="left">
                             <p>${transaction.options.body.order.purchaseNumber}</p>                                                        
-                            <p>Su transacci¨®n no pudo ser realizada. </p>
+                            <p>Su transacciÃ³n no pudo ser realizada. </p>
                         </div>
                     </div>`
         } else {
@@ -170,7 +170,7 @@ app.post('/responsevisa/:purchase', async(req, res) => {
                                 <div class="small">
                                 <a href="${config[env].return}" class="btnBlue" >Finalizar</a>
                                     <p class="small">
-                                        <p class="small"><b class="instruction">IMPORTANTE: Presione finalizar para intentar nuevamente.</b></p> Esta tienda est¨¢ autorizada por Visa para realizar transacciones electr¨®nicas.
+                                        <p class="small"><b class="instruction">IMPORTANTE: Presione finalizar para intentar nuevamente.</b></p> Esta tienda estï¿½ï¿½ autorizada por Visa para realizar transacciones electrÃ³nicas.
                                         </br>Copyright 2020 ? LOLIMSA </p>
                                 </div>
                             </div>

@@ -28,8 +28,6 @@ app.get('/infovisa', async(req, res) => {
     var data = req.query.data
     var output = Buffer.from(data, 'base64').toString('ascii')
     var part = output.split("|")
-
-
     var environment = part[0];
     env = (environment == 'PRUEBAS') ? 'development' : 'production'
 
@@ -53,10 +51,12 @@ app.get('/infovisa', async(req, res) => {
     res.send(boton)
 })
 
-app.post('/responsevisa/', async(req, res) => {
+app.post('/responsevisa/:purchase', async(req, res) => {
+    console.log(req.body);
     var success = false
-    var purchaseNumber = ''
-    var content = ''
+    console.log(req.params.purchase);
+    var purchaseNumber = req.params.purchase;
+    var content = '';
     var options = {
             method: 'POST',
             uri: config[env].APIEcommerce + codigoComercio,
@@ -72,7 +72,7 @@ app.post('/responsevisa/', async(req, res) => {
                 order: {
                     amount: monto,
                     currency: 'PEN',
-                    purchaseNumber: secuenciaPago,
+                    purchaseNumber: purchaseNumber,
                     tokenId: req.body.transactionToken,
                 },
                 terminalId: '1',
@@ -91,23 +91,26 @@ app.post('/responsevisa/', async(req, res) => {
             responseJSON = JSON.stringify(err)
         })
     let transaction = JSON.parse(responseJSON)
+    console.log(transaction)
+    console.log(transaction.statusCode)
+    console.log(success)
+
+
     var style = `<style>*{box-sizing:border-box;margin:0;padding:0}html{background-color:#f6f9fc;font-size:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,Ubuntu,Cantarell,'Open Sans','Helvetica Neue',sans-serif}main{box-sizing:border-box;display:grid;place-items:center;margin:5vh auto 17vh auto;height:60vh}.container{padding:5rem;border-radius:.6rem;border:#2ca2eb .1rem solid}.title{border-radius:.6rem;padding:.6rem;background-color:#2ca2eb;text-align:center;font-weight:700;margin-bottom:2rem;font-size:2rem}P{padding:.3rem;font-weight:400;font-size:1.4rem}.btnBlue{padding:1rem 3rem 1rem 3rem;}.small{padding-top:1rem;text-align:center;font-size:1rem}.colums{column-count:2}.right{text-align:right}.left{text-align:left}.btnBlue{text-decoration:none;align-self:center;text-align:center;background-color:#2ca2eb;border-radius:.6rem;border:0 solid;padding:.6rem;color:#000;cursor:pointer}.btnBlue:hover{background-color:#e1ecf4;color:#2ca2eb}.instruction{margin-bottom:0;padding-bottom:0}</style>`
     if (success) {
         content = `<div class="colums">
                         <div class="right">
-                            <p><b>Orden: </b></p>
-                            <p><b>Nombre del cliente: </b></p>
+                            <p><b>Orden: </b></p>                            
                             <p><b>Tarjeta: </b></p>
                             <p><b>Medio de pago: </b></p>
                             <p><b>Monto (S/.): </b></p>
                             <p><b>Fecha y hora: </b></p>
-                            <p><b>Descripci贸n: </b></p>
+                            <p><b>Descripción: </b></p>
                         </div>
                         <div class="left">
-                            <p>${transaction.order.purchaseNumber}</p>
-                            <p>${client}</p>
+                            <p>${transaction.order.purchaseNumber}</p>                            
                             <p>${transaction.dataMap.CARD}</p>
-                            <p>${transaction.dataMap.BRAND.toUpperCase()}</p>
+                            <p>${transaction.dataMap.BRAND}</p>
                             <p>${transaction.dataMap.AMOUNT} </p>
                             <p>${transaction.dataMap.TRANSACTION_DATE}</p>
                             <p>Aprobado</p>
@@ -116,53 +119,65 @@ app.post('/responsevisa/', async(req, res) => {
         var responseHTML = `<main>
                             <div class="container">
                                 <div>
-                                    <p class="title">Pago satisfactorio 馃憤</p>
+                                    <p class="title">Pago satisfactorio</p>
                                 </div>
                                 ${content}
                                 <div class="small">                                
                                     <a href="${config[env].return}" class="btnBlue" >Finalizar</a>
                                     <p class="small">
-                                        <p class="small"><b class="instruction">IMPORTANTE: Presione finalizar para concretar la transacci贸n.</b></p> Esta tienda est谩 autorizada por Visa para realizar transacciones electr贸nicas.
-                                        </br>Copyright 2020 漏 <a target="_blank" href="https://www.lolimsa.com.pe/">LOLIMSA</a></p>
+                                        <p class="small"><b class="instruction">IMPORTANTE: Presione finalizar para concretar la transacción.</b></p> Esta tienda está autorizada por Visa para realizar transacciones electrónicas.
+                                        </br>Copyright 2020 ? <a target="_blank" href="https://www.lolimsa.com.pe/">LOLIMSA</a></p>
                                 </div>
                             </div>
                         </main> ${style}`
     } else {
-        content = `<div class="colums">
+        if (transaction.statusCode == '403' || (transaction.error.errorCode == '400' && transaction.error.errorMessage == 'MERCHANT_ID does not match') ||(transaction.error.errorCode == '400' && transaction.error.errorMessage == 'AMOUNT does not match')) {
+            content = `<div class="colums">
                         <div class="right">
-                            <p><b>Orden: </b></p>
-                            <p><b>Nombre del cliente: </b></p>
-                            <p><b>Tarjeta: </b></p>
-                            <p><b>Medio de pago: </b></p>
-                            <p><b>Monto (S/.): </b></p>
-                            <p><b>Descripci贸n: </b></p>
+                            <p><b>Orden: </b></p>                            
+                            <p><b>Descripción: </b></p>                            
                         </div>
                         <div class="left">
-                            <p>${transaction.options.body.order.purchaseNumber}</p>
-                            <p>${client}</p>
-                            <p>${transaction.response.body.data.CARD}</p>
-                            <p>${transaction.response.body.data.BRAND.toUpperCase()}</p>
-                            <p>${transaction.response.body.data.AMOUNT} </p>
-                            <p>${transaction.response.body.data.ACTION_DESCRIPTION}</p>
+                            <p>${transaction.options.body.order.purchaseNumber}</p>                                                        
+                            <p>Su transacción no pudo ser realizada. </p>
                         </div>
                     </div>`
+        } else {
+            content = `<div class="colums">
+            <div class="right">
+                <p><b>Orden: </b></p>                            
+                <p><b>Tarjeta: </b></p>
+                <p><b>Medio de pago: </b></p>
+                <p><b>Monto (S/.): </b></p>
+                <p><b>Descripcion: </b></p>
+            </div>
+            <div class="left">
+                <p>${transaction.options.body.order.purchaseNumber}</p>                            
+                <p>${transaction.response.body.data.CARD}</p>
+                <p>${transaction.response.body.data.BRAND}</p>
+                <p>${transaction.response.body.data.AMOUNT} </p>
+                <p>${transaction.response.body.data.ACTION_CODE} - ${transaction.response.body.data.ACTION_DESCRIPTION}</p>
+            </div>
+        </div>`
+        }
+
         var responseHTML = `<main>
                             <div class="container">
                                 <div>
-                                    <p class="title">Pago rechazado 馃憥</p>
+                                    <p class="title">Pago rechazado</p>
                                 </div>
                                 ${content}
                                 <div class="small">
                                 <a href="${config[env].return}" class="btnBlue" >Finalizar</a>
                                     <p class="small">
-                                        <p class="small"><b class="instruction">IMPORTANTE: Presione finalizar para intentar nuevamente.</b></p> Esta tienda est谩 autorizada por Visa para realizar transacciones electr贸nicas.
-                                        </br>Copyright 2020 漏 LOLIMSA </p>
+                                        <p class="small"><b class="instruction">IMPORTANTE: Presione finalizar para intentar nuevamente.</b></p> Esta tienda está autorizada por Visa para realizar transacciones electrónicas.
+                                        </br>Copyright 2020 ? LOLIMSA </p>
                                 </div>
                             </div>
                         </main> ${style}`
     }
     var body = success + '|' + JSON.stringify(transaction)
-    await sendResponse(body)
+    sendResponse(body)
     res.send(responseHTML)
 })
 
@@ -288,8 +303,8 @@ function generarBoton(sessionKey, visa) {
         <main>
         <div class='loader linkid'></div> 
         <p>Espere un momento por favor...</p>       
-        <div id='linkid' class='linkid'>
-            <form name='myForm' class="center" id='myForm' action='https://qullana-pago.herokuapp.com/responsevisa' method='post'>
+        <div id='linkid' class='linkid'>        
+            <form name='myForm' class="center" id='myForm' action='https://www.visa.qullana.com:8012/visa/responsevisa/${visa.purchaseNumber}' method='post'>
                 <script src='${config[env].urlJs}'
                 data-sessiontoken='${sessionKey}'
                 data-channel='web'
@@ -319,7 +334,8 @@ function generarBoton(sessionKey, visa) {
     return result
 }
 
-async function sendResponse(body) {
+//async 
+function sendResponse(body) {
     var responseJSON = ''
     var options = {
         method: 'POST',
@@ -333,7 +349,8 @@ async function sendResponse(body) {
         json: true,
     }
 
-    await rp(options)
+    //await 
+    rp(options)
         .then(async function(response) {
             responseJSON = JSON.stringify(response)
         })

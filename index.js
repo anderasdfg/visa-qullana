@@ -133,7 +133,8 @@ app.post("/responsevisa/:purchase", async(req, res) => {
                 </br>Copyright 2020 <a target="_blank" href="https://www.lolimsa.com.pe/">LOLIMSA</a></p>
         </div>
     </div>
-</main> ${style}`;
+</main> ${style}`
+    let transaction = JSON.parse(responseJSON);
     res.send(responseHTML);
     var body = success + '|' + JSON.stringify(transaction)
     sendResponse(body)

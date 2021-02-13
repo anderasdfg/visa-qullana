@@ -11,6 +11,7 @@
     "author": "Anderley Candela",
     "license": "ISC",
     "dependencies": {
+        "axios": "^0.21.1",
         "express": "^4.16.3",
         "externalip": "^1.0.2",
         "jsonwebtoken": "^8.3.0",

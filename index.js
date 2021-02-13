@@ -53,6 +53,37 @@ app.get("/infovisa", async(req, res) => {
     res.send(boton);
 });
 
+app.get("/qr", async(req, res) => {
+    var data = req.query.data;
+    var output = Buffer.from(data, "base64").toString("ascii");
+    var part = output.split("|");
+    var environment = part[0];
+    env = environment == "PRUEBAS" ? "development" : "production";
+
+    var visa = {
+        user: part[1],
+        password: part[2],
+        merchantId: part[3],
+        purchaseNumber: part[4],
+        clientname: part[5],
+        clientlastname: part[6],
+        currency: part[7],
+        amount: part[8],
+        email: part[9],
+        dni: part[10],
+    };
+
+    codigoComercio = visa.merchantId;
+    client = visa.clientname + " " + visa.clientlastname;
+    var credentials = Buffer.from(visa.user + ":" + visa.password).toString(
+        "base64"
+    );
+    console.log(credentials);
+    let tk = await getTokenSecurity(credentials, visa);
+    var qrb64 = await getQR(tk, visa);
+    res.send(qrb64);
+});
+
 app.post("/responsevisa/:purchase", async(req, res) => {
     var success = false;
     console.log(req.params.purchase);
@@ -136,9 +167,32 @@ app.post("/responsevisa/:purchase", async(req, res) => {
 </main> ${style}`
     let transaction = JSON.parse(responseJSON);
     res.send(responseHTML);
-    var body = success + '|' + JSON.stringify(transaction)
-    sendResponse(body)
+    var bodytoSend = success + '|' + JSON.stringify(transaction)
+    sendResponse(bodytoSend)
 });
+
+//funciones
+async function getTokenSecurity(credentials, visa) {
+    const body = "";
+    var token = "";
+    await axios
+        .post(config[env].APIToken, body, {
+            headers: {
+                Authorization: "Basic " + credentials,
+                Accept: "*/*",
+            },
+        })
+        .then(async(response) => {
+            token = response.data;
+            //res.send(responseHTML);
+        })
+        .catch(async(err) => {
+            if (err.response) {
+                console.log(err.response.status);
+            }
+        });
+    return token;
+}
 
 //funciones
 async function getToken(credentials, visa) {
@@ -257,6 +311,52 @@ function sendResponse(body) {
             success = false
             responseJSON = JSON.stringify(err)
         });
+}
+
+async function getQR(token, visa) {
+    var qr = "";
+    var body = {
+        "enabled": true,
+        "param": [{
+                "name": "merchantId",
+                "value": visa.merchantId
+            },
+            {
+                "name": "transactionCurrency",
+                "value": "604"
+            },
+            {
+                "name": "transactionAmount",
+                "value": visa.amount
+            },
+            {
+                "name": "additionalData",
+                "value": visa.purchaseNumber
+            }
+        ],
+        "tagType": "DYNAMIC",
+        "validityDate": "25122030"
+    };
+    await axios
+        .post(config[env].qr, body, {
+            headers: {
+                Authorization: token,
+                Accept: "*/*",
+            },
+        })
+        .then(async(response) => {
+            console.log(response.data);
+            if (response.data) {
+                // console.log(response.data.tagImg);
+                qr = response.data.tagImg;
+            }
+        })
+        .catch(async(err) => {
+            if (err.response) {
+                console.log(err.response);
+            }
+        });
+    return qr;
 }
 
 app.get("/", (req, res) => res.send(req.body));

@@ -139,8 +139,11 @@ app.post("/responsevisa/:purchase", async(req, res) => {
             success = false
             responseJSON = JSON.stringify(response)
             tipopago = "rechazado"
+            console.log(responseJSON);
             console.log("Ocurrió un error");
-            console.log(err.response.data);
+            if (err.response.data) {
+                console.log(err.response.data);
+            }
             //res.send(err);
             content = `            
                             <p class="center">Su transacción no fue procesada.</p> 

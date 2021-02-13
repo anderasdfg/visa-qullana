@@ -148,7 +148,7 @@ app.post("/responsevisa/:purchase", async(req, res) => {
             //res.send(err);
             content = `            
                             <p class="center">Su transacción no fue procesada.</p> 
-                            <p><b>Descripción: </b>${(err.response.data) ? err.response.data.errorMessage : 'Operación denegada. Intente nuevamente'} </p>  
+                            <p><b>Descripción: </b>${(err.response.data) ?  'Operación denegada. Por favor, intente nuevamente. (Código de error: ' + err.response.data.errorCode + ')' : 'Operación denegada. Intente nuevamente'} </p>  
                         `
                 //res.send(content);
         });
@@ -299,6 +299,7 @@ function generarBoton(sessionKey, visa) {
 
 function sendResponse(body) {
     var responseJSON = ''
+    console.log("Enviando respuesta a LOLIMSASERVICES...");
     var body = {
         Request: body
     }
@@ -315,6 +316,7 @@ function sendResponse(body) {
             success = false
             responseJSON = JSON.stringify(err)
         });
+    console.log(responseJSON);
 }
 
 async function getQR(token, visa) {
